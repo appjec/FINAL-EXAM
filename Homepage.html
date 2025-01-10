@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Signup and View Users</title>
+</head>
+<body>
+  
+  <h2>Registered Users</h2>
+  <ul id="userList"></ul>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHFDxyIXy67qQzrbY6PoIB0iXmJVqdNDA",
+      authDomain: "final-exam-4d002.firebaseapp.com",
+      projectId: "final-exam-4d002",
+      storageBucket: "final-exam-4d002.appspot.com",
+      messagingSenderId: "614733397003",
+      appId: "1:614733397003:web:e7a61d4f4b00bbab55db0e",
+      measurementId: "G-REK2BH9FWF"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // Handle signup form submission
+    const signupForm = document.getElementById('signupForm');
+    signupForm.addEventListener('submit', (e) )=> {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+
+      const userRef = push(ref(database, 'users'));
+      set(userRef, {
+        name: name,
+        email: email
+      }).then(() => {
+        alert('Signup successful!');
+        signupForm.reset();
+      }).catch(error => {
+        alert('Error: ' + error.message);
+      });
+    });
+
+    // Display registered users
+    const userList = document.getElementById('userList');
+    onValue(ref(database, 'users'), (snapshot) => {
+      userList.innerHTML = '';  // Clear the list
+      snapshot.forEach((childSnapshot) => {
+        const user = childSnapshot.val();
+        const listItem = document.createElement('li');
+        listItem.textContent = `Name: ${user.name}, Email: ${user.email}`;
+        userList.appendChild(listItem);
+      });
+    });
+  </script>
+</body>
+</html>
