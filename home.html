@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Signup and View Users</title>
+</head>
+<body>
+  <h2>Registered Users</h2>
+  <ul id="userList"></ul>
+
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHFDxyIXy67qQzrbY6PoIB0iXmJVqdNDA",
+      authDomain: "final-exam-4d002.firebaseapp.com",
+      databaseURL: "https://final-exam-4d002-default-rtdb.firebaseio.com", 
+      projectId: "final-exam-4d002",
+      storageBucket: "final-exam-4d002.appspot.com",
+      messagingSenderId: "614733397003",
+      appId: "1:614733397003:web:e7a61d4f4b00bbab55db0e",
+      measurementId: "G-REK2BH9FWF"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // Display registered users
+    const userList = document.getElementById('userList');
+    const usersRef = ref(database, 'users');
+    
+    onValue(usersRef, (snapshot) => {
+      userList.innerHTML = ''; // Clear the list before adding new data
+      snapshot.forEach((childSnapshot) => {
+        const user = childSnapshot.val();
+        const listItem = document.createElement('li');
+        listItem.textContent = `Name: ${user.username}, Email: ${user.email}`;
+        userList.appendChild(listItem);
+      });
+    });
+  </script>
+</body>
+</html>

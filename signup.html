@@ -3,17 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Signup</title>
+  <title>Signup Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .signup-form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+    .signup-form h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .signup-form input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .signup-form button {
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .signup-form button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-form">
+    <h2>Signup</h2>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button onclick="signUp()">Sign Up</button>
+  </div>
+
   <script type="module">
-    // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
     import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
 
-    // Your web app's Firebase configuration
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyBHFDxyIXy67qQzrbY6PoIB0iXmJVqdNDA",
       authDomain: "final-exam-4d002.firebaseapp.com",
+      databaseURL: "https://final-exam-4d002-default-rtdb.firebaseio.com/",
       projectId: "final-exam-4d002",
       storageBucket: "final-exam-4d002.appspot.com",
       messagingSenderId: "614733397003",
@@ -23,78 +74,43 @@
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
     const database = getDatabase(app);
 
-    // Handle form submission
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('signupForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+    // Signup function
+    function signUp() {
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-        // Get form values
-        const username = document.getElementById('username').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+      // Create a user in Firebase Authentication
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
 
-        // Validate input
-        if (!username || !email || !password) {
-          alert('Please fill in all fields');
-          return;
-        }
-
-        // Save to Firebase Realtime Database
-        const userId = new Date().getTime(); // Use timestamp as a unique ID
-        set(ref(database, 'users/' + userId), {
-          username: username,
-          email: email,
-          password: password // Note: In a real app, never store plain text passwords
-        }).then(() => {
-          alert('User signed up successfully!');
-          document.getElementById('signupForm').reset();
-        }).catch((error) => {
-          alert('Error: ' + error.message);
+          // Save user info in Realtime Database
+          set(ref(database, 'users/' + user.uid), {
+            username: username,
+            email: email,
+          })
+            .then(() => {
+              alert('User signed up successfully and saved to the database!');
+              document.getElementById('username').value = '';
+              document.getElementById('email').value = '';
+              document.getElementById('password').value = '';
+              window.location.href= 'login.html';
+            })
+            .catch((error) => {
+              alert('Error saving user to database: ' + error.message);
+            });
+        })
+        .catch((error) => {
+          alert('Error signing up: ' + error.message);
         });
-      });
-    });
+    }
+
+    // Attach signUp to the window for global scope
+    window.signUp = signUp;
   </script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    form {
-      max-width: 400px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: column;
-    }
-    input {
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 16px;
-    }
-    button {
-      padding: 10px;
-      font-size: 16px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-  </style>
-</head>
-<body>
-
-<h1>Signup Form</h1>
-<form id="signupForm">
-  <input type="text" id="username" placeholder="Enter your username" required>
-  <input type="email" id="email" placeholder="Enter your email" required>
-  <input type="password" id="password" placeholder="Enter your password" required>
-  <button type="submit">Sign Up</button>
-</form>
-
 </body>
 </html>
