@@ -1,0 +1,23 @@
+---
+name: Super-Linter
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  super-linter-job:
+    name: Super-Linter Job
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run Super-Linter
+        uses: github/super-linter@v4.10.0
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
