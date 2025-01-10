@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  yawehkey:
-    name: Lint code base
+  super-linter-job:
+    name: Run Super-Linter
     runs-on: ubuntu-latest
 
     steps:
@@ -17,4 +17,5 @@ jobs:
       - name: Run Super-Linter
         uses: github/super-linter@v4
         env:
+          DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
