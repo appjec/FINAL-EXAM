@@ -7,7 +7,7 @@ on:
 
 jobs:
   yawehkey:
-    name: Link code base
+    name: Lint code base
     runs-on: ubuntu-latest
 
     steps:
