@@ -1,3 +1,4 @@
+// Display registered users
 const userList = document.getElementById('userList');
 const usersRef = ref(database, 'users');
 
