@@ -5,7 +5,7 @@
 </head>
 <body>
   <h2>Registered Users</h2>
-  <ul id="userList"></ul>
+  <ul id="user-list"></ul>
 
   <script type="module">
     // Import Firebase SDKs
@@ -29,7 +29,7 @@
     const database = getDatabase(app);
 
     // Display registered users
-    const userList = document.getElementById('userList');
+    const userList = document.getElementById('user-list');
     const usersRef = ref(database, 'users');
     
     onValue(usersRef, (snapshot) => {
